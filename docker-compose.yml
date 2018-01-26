@@ -1,0 +1,33 @@
+
+version: "3.3"
+
+services:
+
+  spotify-hue-service:
+    build:
+       context: service
+    image: spotify-hue-service
+    environment:
+      - SERVER_ENV_PHILIPS_HUE_USERNAME=<your hue bridge username>
+      - SERVER_ENV_PHILIPS_HUE_BRIDGE_IP=<your hue bridge ip>
+      - SERVER_ENV_SPOTIFY_CLIENT_ID=<your spotify client id>
+      - SERVER_ENV_SPOTIFY_CLIENT_SECRET=<your spotiy client secret>
+      - SERVER_ENV_LIGHT_MATCHING=true
+    ports:
+      - "8081:8081"
+    networks:
+      - frontend-network
+      - backend-network
+
+  spotify-hue-web:
+    build:
+       context: web
+    image: spotify-hue-web
+    ports:
+      - "3000:80"
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+  backend-network:

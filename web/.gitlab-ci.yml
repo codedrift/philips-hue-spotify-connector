@@ -1,0 +1,48 @@
+stages:
+  - build_yarn
+  - build_docker
+  - trigger_deployment
+
+variables:
+  REGISTRY: registry.gitlab.com/alphabetapeter
+  CONTAINER_REF_IMAGE: $REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+  CONTAINER_RELEASE_IMAGE: $REGISTRY/$CI_PROJECT_NAME:latest
+
+build_yarn:
+  stage: build_yarn
+  image: yarnpkg/node-yarn:node7
+  only:
+   - master
+  script:
+   - yarn
+   - yarn build
+   - pwd
+   - ls -la
+  cache:
+    paths:
+    - build
+  artifacts:
+    paths:
+      - build
+
+build_docker:
+  stage: build_docker
+  image: gitlab/dind
+  only:
+   - master
+  script:
+   - pwd
+   - ls -la
+   #- docker login -u alphabetapeter -p $REGISTRY_KEY registry.gitlab.com
+   - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+   - docker build . -t $CONTAINER_REF_IMAGE
+   - docker push $CONTAINER_REF_IMAGE
+   - docker tag $CONTAINER_REF_IMAGE $CONTAINER_RELEASE_IMAGE
+   - docker push $CONTAINER_RELEASE_IMAGE
+
+trigger_deployment:
+  stage: trigger_deployment
+  only:
+   - master
+  script:
+   - curl https://build.latenight.me/$DEPLOY_AUTH_KEY/$CI_PROJECT_NAME/$CI_COMMIT_SHA
