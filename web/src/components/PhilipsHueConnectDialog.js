@@ -45,7 +45,6 @@ class PhilipsHueConnectDialog extends Component {
 	};
 
 	render() {
-		console.log('this.props', this.props,this.state);
 		return (
 			<div className={`modal ${this.props.visible ? "is-active" : ""}`}>
 				<div onClick={this.close} className="modal-background"/>

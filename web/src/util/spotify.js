@@ -2,7 +2,7 @@ import queryString from "query-string";
 
 const SCOPES = 'user-read-private user-read-email user-read-playback-state';
 const REDIRECT_URI = window.location.href;
-const CLIENT_ID = "e7723d7649c54b6389f0755a35718e13";
+const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
 
 const generateRandomString = (length) => {
 	let text = '';
