@@ -35,16 +35,20 @@ class App extends Component {
 				userName: "",
 				bridgeIp: ""
 			},
+			spotify: {
+				clientId: "",
+				clientSecret: ""
+			}
 		}
 	};
 
 	componentDidMount() {
 		this.update();
-		this.updateConfig();
-		setInterval(() => this.update(), 2000)
+		setInterval(() => this.update(), 5000)
 	}
 
 	update = () => {
+		this.updateConfig();
 		this.updatePlayStatus();
 		this.updateLightStatus();
 	};
@@ -57,7 +61,7 @@ class App extends Component {
 	};
 
 	loginWithSpotify = () => {
-		authenticateSpotify(() =>
+		authenticateSpotify(this.state.config.spotify.clientId,() =>
 			setTimeout(() => this.update(), 2000)
 		)
 	};

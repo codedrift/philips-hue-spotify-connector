@@ -2,7 +2,6 @@ import queryString from "query-string";
 
 const SCOPES = 'user-read-private user-read-email user-read-playback-state';
 const REDIRECT_URI = window.location.href;
-const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
 
 const generateRandomString = (length) => {
 	let text = '';
@@ -14,11 +13,11 @@ const generateRandomString = (length) => {
 	return text;
 };
 
-const buildLoginUrl = () => {
+const buildLoginUrl = (clientId) => {
 	const state = generateRandomString(16);
 	let url = 'https://accounts.spotify.com/authorize';
 	url += '?response_type=code';
-	url += '&client_id=' + encodeURIComponent(CLIENT_ID);
+	url += '&client_id=' + encodeURIComponent(clientId);
 	url += '&scope=' + encodeURIComponent(SCOPES);
 	url += '&redirect_uri=' + encodeURIComponent(REDIRECT_URI);
 	url += '&state=' + encodeURIComponent(state);
@@ -43,8 +42,8 @@ export const fetchPlayStatus = () => {
 		.catch((e) => console.log('Error fetching spotify status', e))
 };
 
-export const authenticate = (onAuthenticated) => {
-		const url = buildLoginUrl();
+export const authenticate = (clientId, onAuthenticated) => {
+		const url = buildLoginUrl(clientId);
 		const windowName = "Spotify Login";
 		const positionFromTop = 200;
 		const positionFromLeft = window.innerWidth / 2;
