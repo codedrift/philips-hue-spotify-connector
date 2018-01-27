@@ -23,8 +23,6 @@ services:
     build:
        context: web
     image: spotify-hue-web
-    environment:
-      - REACT_APP_SPOTIFY_CLIENT_ID=<your spotify client id>
     ports:
       - "3000:80"
     networks:
