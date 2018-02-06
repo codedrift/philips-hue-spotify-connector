@@ -12,3 +12,7 @@ This piece of software will match your philips hue lights to the album cover of 
 * Open your browser and go to http://localhost:3000
 * Click `Connect Spotify` to authenticate the service
 * Let the light matching begin
+
+
+# Run on raspberry pi
+* Use the docker-compose file located in `compose/arm`

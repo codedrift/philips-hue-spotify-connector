@@ -1,12 +1,9 @@
 
-version: "3.3"
+version: "3.2"
 
 services:
-
   philips-hue-spotify-connector-service:
-    build:
-       context: service
-    image: alphabetapeter/philips-hue-spotify-connector-service:latest
+    image: alphabetapeter/philips-hue-spotify-connector-service:arm
     environment:
       - SERVER_ENV_PHILIPS_HUE_USERNAME=<your hue bridge username>
       - SERVER_ENV_PHILIPS_HUE_BRIDGE_IP=<your hue bridge ip>
@@ -20,9 +17,7 @@ services:
       - backend-network
 
   philips-hue-spotify-connector-web:
-    build:
-       context: web
-    image: alphabetapeter/philips-hue-spotify-connector-service:latest
+    image: alphabetapeter/philips-hue-spotify-connector-web:arm
     ports:
       - "3000:80"
     networks:
