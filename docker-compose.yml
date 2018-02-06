@@ -3,10 +3,10 @@ version: "3.3"
 
 services:
 
-  spotify-hue-service:
+  philips-hue-spotify-connector-service:
     build:
        context: service
-    image: spotify-hue-service
+    image: philips-hue-spotify-connector-service
     environment:
       - SERVER_ENV_PHILIPS_HUE_USERNAME=<your hue bridge username>
       - SERVER_ENV_PHILIPS_HUE_BRIDGE_IP=<your hue bridge ip>
@@ -19,10 +19,10 @@ services:
       - frontend-network
       - backend-network
 
-  spotify-hue-web:
+  philips-hue-spotify-connector-web:
     build:
        context: web
-    image: spotify-hue-web
+    image: philips-hue-spotify-connector-web
     ports:
       - "3000:80"
     networks:
