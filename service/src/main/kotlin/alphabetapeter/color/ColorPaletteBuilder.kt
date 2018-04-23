@@ -17,7 +17,7 @@ class ColorPaletteBuilder : Loggable {
 		logger.info("Building color palette for url $url")
 		// https://github.com/SvenWoltmann/color-thief-java
 		val img = ImageIO.read(URL(url))
-		val result = ColorThief.getColorMap(img, 5)
+		val result = ColorThief.getColorMap(img, 10)
 		return result.vboxes.map { parseVbox(it) }
 	}
 
