@@ -46,7 +46,7 @@ class ColorChangeEventConsumer(
 						val name = light.getString("name")
 						val xy = ColorConverter.convertRgbToXy(color.rgb, modelId)
 						val setting = Json.obj("xy" to xy)
-						logger.info("Setting light $name to ${color.rgb} - Model $modelId")
+						logger.info("Setting light $name to ${color.hex} - Model $modelId")
 						apiClient.setLight(it.key, setting)
 					}
 					CompositeFuture.all(lights).setHandler({
