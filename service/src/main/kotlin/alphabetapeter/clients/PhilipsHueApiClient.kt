@@ -14,10 +14,10 @@ import org.apache.commons.lang3.StringUtils
 
 class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 
+	private val webClient = createWebClient()
 
-	private fun webClient(vertx: Vertx): WebClient {
+	private fun createWebClient(): WebClient {
 		val options = WebClientOptions()
-				.setLogActivity(true)
 				.setKeepAlive(false)
 		return WebClient.create(vertx, options)
 	}
@@ -26,8 +26,8 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 		val future = Future.future<JsonObject>()
 		val userName = LocalMap(vertx).getHueUsername()
 		val ip = LocalMap(vertx).getHueBridgeIp()
-		logger.info("GET http://$ip/api/$userName$requestUri")
-		webClient(vertx)
+		logger.debug("GET http://$ip/api/$userName$requestUri")
+		webClient
 				.get(80, ip, "/api/$userName$requestUri")
 				.send({ asyncResult ->
 					if (asyncResult.succeeded()) {
@@ -44,8 +44,8 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 		val future = Future.future<JsonObject>()
 		val userName = LocalMap(vertx).getHueUsername()
 		val ip = LocalMap(vertx).getHueBridgeIp()
-		logger.info("PUT http://$ip/api/$userName$requestUri $body")
-		webClient(vertx)
+		logger.debug("PUT http://$ip/api/$userName$requestUri $body")
+		webClient
 				.put(80, ip, "/api/$userName$requestUri")
 				.sendJson(body, { asyncResult ->
 					if (asyncResult.succeeded()) {
@@ -64,8 +64,8 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 				"devicetype" to clientName
 		)
 		val ip = LocalMap(vertx).getHueBridgeIp()
-		logger.info("POST http://$ip/api $body")
-		webClient(vertx)
+		logger.debug("POST http://$ip/api $body")
+		webClient
 				.post(80, ip, "/api")
 				.sendJson(body, { asyncResult ->
 					if (asyncResult.succeeded()) {

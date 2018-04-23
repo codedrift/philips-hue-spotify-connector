@@ -77,10 +77,10 @@ class ServiceVerticle : AbstractVerticle(), Loggable {
 	}
 
 	private fun configureRouter(router: Router) {
-		router.route().handler({
-			logger.info("Requested ${it.request().method()} ${it.request().absoluteURI()}")
-			it.next()
-		})
+//		router.route().handler({
+//			logger.info("Requested ${it.request().method()} ${it.request().absoluteURI()}")
+//			it.next()
+//		})
 
 		val corsHandler = CorsHandler
 				.create("*")

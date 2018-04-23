@@ -1,4 +1,4 @@
-package alphabetapeter.events
+package alphabetapeter.util
 
 import io.vertx.core.Handler
 import io.vertx.core.Vertx

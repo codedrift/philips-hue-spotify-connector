@@ -1,6 +1,7 @@
 package alphabetapeter.events
 
 import alphabetapeter.clients.SpotifyApiClient
+import alphabetapeter.util.EventBus
 import alphabetapeter.util.Loggable
 import io.vertx.core.Handler
 import io.vertx.core.Vertx

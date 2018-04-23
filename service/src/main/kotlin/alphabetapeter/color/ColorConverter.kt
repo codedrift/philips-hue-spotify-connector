@@ -1,5 +1,6 @@
 package alphabetapeter.color
 
+import alphabetapeter.model.RGB
 import com.philips.lighting.hue.sdk.utilities.PHUtilities
 
 class ColorConverter {
@@ -18,10 +19,10 @@ class ColorConverter {
 				rgbHex = "00000".substring(0, 6 - length) + rgbHex
 			}
 
-			return "#" + rgbHex
+			return "#$rgbHex"
 		}
 
-		fun convertRgbToXy(color: ColorPaletteBuilder.RGB, modelId: String): FloatArray {
+		fun convertRgbToXy(color: RGB, modelId: String): FloatArray {
 			return PHUtilities.calculateXYFromRGB(color.r,color.g,color.b, modelId)
 		}
 

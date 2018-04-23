@@ -11,7 +11,7 @@ class SpotifyPlayerStatusGetHandler(
 	: Handler<RoutingContext>, Loggable {
 
 	override fun handle(routingContext: RoutingContext) {
-		routingContext.response().end(LocalMap(vertx).getSpotifyStatus().encode())
+		routingContext.response().end(LocalMap(vertx).getSpotifyStatus().toJsonObject().encode())
 	}
 
 

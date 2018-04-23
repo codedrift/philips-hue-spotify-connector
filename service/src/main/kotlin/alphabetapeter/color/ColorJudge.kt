@@ -1,20 +1,16 @@
 package alphabetapeter.color
 
-class ColorJudge {
+import alphabetapeter.model.ColorSet
+import alphabetapeter.model.RatedColor
 
-	data class Judging(
-			val color: ColorPaletteBuilder.Palette,
-			val highestDeviation: Int,
-			val deviationAverage: Double,
-			val isColorful: Boolean
-	)
+class ColorJudge {
 
 	companion object {
 
 		/**
 		 * Check if color is colorful. ignore black and white extremes
 		 */
-		fun isColorful(color: ColorPaletteBuilder.Palette): Judging {
+		fun isColorful(color: ColorSet): RatedColor {
 			var colorful = true
 
 			val red = color.rgb.r
@@ -50,7 +46,7 @@ class ColorJudge {
 //				colorful = false
 //			}
 
-			return Judging(color, highestDeviation, Math.abs(deviationAverage * 100), colorful)
+			return RatedColor(color, highestDeviation, Math.abs(deviationAverage * 100), colorful)
 		}
 	}
 }

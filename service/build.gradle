@@ -61,6 +61,7 @@ dependencies {
 	compile "io.vertx:vertx-lang-kotlin:$vertx_version"
 	compile group: 'org.ow2.chameleon.fuchsia.base.philips-hue', name: 'org.ow2.chameleon.fuchsia.base.philips-hue.huedsk-bundle', version: '0.0.4'
 	compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+	compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 	testCompile 'junit:junit:4.11'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"

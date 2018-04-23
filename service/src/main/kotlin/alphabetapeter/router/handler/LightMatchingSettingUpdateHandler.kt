@@ -1,6 +1,6 @@
 package alphabetapeter.router.handler
 
-import alphabetapeter.events.EventBus
+import alphabetapeter.util.EventBus
 import alphabetapeter.util.LocalMap
 import alphabetapeter.util.Loggable
 import io.vertx.core.Handler

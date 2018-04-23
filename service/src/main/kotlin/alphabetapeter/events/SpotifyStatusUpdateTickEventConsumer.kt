@@ -2,13 +2,13 @@ package alphabetapeter.events
 
 import alphabetapeter.clients.SpotifyApiClient
 import alphabetapeter.color.ColorPaletteBuilder
+import alphabetapeter.model.ColorSet
+import alphabetapeter.util.EventBus
 import alphabetapeter.util.LocalMap
 import alphabetapeter.util.Loggable
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
-import io.vertx.kotlin.core.json.Json
-import io.vertx.kotlin.core.json.obj
 
 
 class SpotifyStatusUpdateTickEventConsumer(
@@ -34,10 +34,7 @@ class SpotifyStatusUpdateTickEventConsumer(
 			if (it.succeeded()) {
 				val body = it.result()
 				if(body != null){
-					val playStatus = parsePlayStatus(body)
-					logger.debug("Spotify player status:\n${playStatus.encodePrettily()}")
-					LocalMap(vertx).putSpotifyStatus(playStatus)
-					EventBus(vertx).publish(EventBus.Type.SPOTIFY_STATE_CHANGE.name, playStatus)
+					updatePlayStatus(body)
 				}
 			} else {
 				logger.error("Failed to update spotify status", it.cause().message)
@@ -45,57 +42,61 @@ class SpotifyStatusUpdateTickEventConsumer(
 		})
 	}
 
-	private fun parsePlayStatus(body: JsonObject): JsonObject {
-		val album = body.getJsonObject("item").getJsonObject("album")
+	private fun updatePlayStatus(body: JsonObject) {
+		val artworkUrl = selectAlbumArtwork(body)
 
-		val image = selectCoverImage(album)
+		val playStatus = LocalMap(vertx).getSpotifyStatus()
 
-		val playStatus = JsonObject()
-				.put("status", body)
-				.put("artwork", image)
+		val item = body
+				.getJsonObject("item")
 
-		if (image != null) {
+		playStatus.artists = item
+				.getJsonArray("artists")
+				.map{ it as JsonObject}
+				.joinToString(", ") { it.getString("name")}
+
+		playStatus.album = item.getJsonObject("album").getString("name")
+		playStatus.song = item.getString("name")
+
+		if(!artworkUrl.isBlank() && playStatus.artworkUrl != artworkUrl) {
+			playStatus.artworkUrl = artworkUrl
+
 			val colorPaletteBuilder = ColorPaletteBuilder()
-			val colorPalettes = colorPaletteBuilder.buildPalettesFromUrl(image)
-			val chosenPalette = colorPaletteBuilder.chooseHueColor(colorPalettes)
+			val colorPalettes = colorPaletteBuilder.buildPalettesFromUrl(artworkUrl)
+			val eligibleColors = colorPaletteBuilder.chooseHueColor(colorPalettes)
+			val mainColor = eligibleColors.lastOrNull()
 
-			playStatus.put("colors", colorPalettes.map {
-				Json.obj(
-						"hex" to it.hex
-				)
-			})
+			playStatus.colors = colorPalettes.map {
+				ColorSet(it.hex, it.rgb)
+			}
 
-			if (chosenPalette != null) {
+			playStatus.eligibleColors = eligibleColors
 
-				val newColor = ColorPaletteBuilder.HueColor(
-						chosenPalette.hex,
-						chosenPalette.rgb
-				)
-
-
-				playStatus.put("hue_color", newColor.hex)
-
-				updateColor(newColor)
+			if (mainColor != null) {
+				playStatus.mainColor = mainColor.color
+				logger.info("Album color changed to ${mainColor.color.hex}")
+				EventBus(vertx).publish(EventBus.Type.COLOR_CHANGE.name)
 			}
 		}
-		return playStatus
+
+		LocalMap(vertx).putSpotifyStatus(playStatus)
+		val playStatusJson = playStatus.toJsonObject()
+		EventBus(vertx).publish(EventBus.Type.SPOTIFY_STATE_CHANGE.name, playStatusJson)
+		logger.debug("Spotify player status:\n$playStatusJson")
+
 	}
 
-	private fun updateColor(newColor: ColorPaletteBuilder.HueColor) {
-		val lastColor = LocalMap(vertx).getHueColor()
-		if (lastColor == null || !lastColor.hex.equals(newColor.hex, true)) {
-			logger.info("Color changed: \nCurrent - $lastColor\nNew - $newColor")
-			LocalMap(vertx).putHueColor(newColor)
-			EventBus(vertx).publish(EventBus.Type.COLOR_CHANGE.name)
-		}
-	}
-
-	private fun selectCoverImage(album: JsonObject): String? {
-		return album
-				.getJsonArray("images")
+	private fun selectAlbumArtwork(album: JsonObject): String {
+		val maybeAlbumArt = album
+				.getJsonObject("item").getJsonObject("album").getJsonArray("images")
 				.map { it as JsonObject }
 				.sortedBy { it.getInteger("width") }
-				.lastOrNull()?.getString("url")
+				.lastOrNull()
+		return if(maybeAlbumArt != null) {
+			maybeAlbumArt.getString("url")
+		} else {
+			""
+		}
 	}
 
 }

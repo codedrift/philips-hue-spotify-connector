@@ -15,8 +15,7 @@ class SpotifyInfoCard extends Component {
 		</div>
 	);
 
-	renderColors = () => {
-		const colors = this.props.status.colors;
+	renderColors = (colors) => {
 		return colors.length ? (
 			<div className={"color-display-container"}>
 				{colors.map(color => this.renderColor(color.hex))}
@@ -36,21 +35,19 @@ class SpotifyInfoCard extends Component {
 		</div>
 	);
 
-	renderSongInfo = (album, trackName, artwork) => {
-		const {name, artists} = album;
-		const artistsString = artists.map((artist) => artist.name).join(", ");
+	renderSongInfo = (album, song, artists, artwork) => {
 		return (
 			<div className="columns">
 				<div className="column">
-					<img alt={name} src={artwork} className={"spotify-album-cover"}/>
+					<img alt={album} src={artwork} className={"spotify-album-cover"}/>
 				</div>
 				<div className="column">
 					<span className="tag is-white">Track</span>
-					<h4 className="subtitle is-4">{trackName}</h4>
+					<h4 className="subtitle is-4">{song}</h4>
 					<span className="tag is-white">Album</span>
-					<h5 className="subtitle is-5">{name}</h5>
+					<h5 className="subtitle is-5">{album}</h5>
 					<span className="tag is-white">Artist</span>
-					<h5 className="subtitle is-5">{artistsString}</h5>
+					<h5 className="subtitle is-5">{artists}</h5>
 				</div>
 			</div>
 		);
@@ -58,16 +55,19 @@ class SpotifyInfoCard extends Component {
 
 	render() {
 		// return null;
-		const {hue_color, artwork, status: {item: {album, name}}} = this.props.status;
+		const {mainColor, artworkUrl, album, artists, song, colors, eligibleColors } = this.props.status;
 		return (
 			<div className="content">
-				{this.renderSongInfo(album, name, artwork)}
+				{this.renderSongInfo(album, song, artists, artworkUrl)}
 				<hr/>
 				<h4>Dominant Colors</h4>
-				{this.renderColors()}
+				{this.renderColors(colors)}
+				<hr/>
+				<h4>Eligible Colors</h4>
+				{this.renderColors(eligibleColors.map(color => color.color))}
 				<hr/>
 				<h4>{"Chosen color"}</h4>
-				{hue_color ? this.renderColor(hue_color) : this.renderColorNotMatched()}
+				{mainColor ? this.renderColor(mainColor.hex) : this.renderColorNotMatched()}
 			</div>
 		);
 	}

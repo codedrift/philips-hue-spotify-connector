@@ -1,6 +1,6 @@
 package alphabetapeter.timer
 
-import alphabetapeter.events.EventBus
+import alphabetapeter.util.EventBus
 import alphabetapeter.util.Loggable
 import io.vertx.core.Vertx
 

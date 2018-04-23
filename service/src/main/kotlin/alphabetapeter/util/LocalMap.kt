@@ -1,6 +1,7 @@
 package alphabetapeter.util
 
-import alphabetapeter.color.ColorPaletteBuilder
+import alphabetapeter.model.ColorSet
+import alphabetapeter.model.PlayStatus
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.core.shareddata.LocalMap
@@ -11,11 +12,12 @@ class LocalMap(private val vertx: Vertx) {
 		SPOTIFY_ACCESS_TOKEN_KEY,
 		SPOTIFY_REFRESH_TOKEN,
 		SPOTIFY_STATUS_KEY,
+		SPOTIFY_CLIENT_ID,
+		SPOTIFY_CLIENT_SECRET,
+		SPOTIFY_ALBUM_URL,
 		PHILIPS_HUE_COLOR,
 		PHILIPS_HUE_USERNAME,
 		PHILIPS_HUE_BRIDGE_IP,
-		SPOTIFY_CLIENT_ID,
-		SPOTIFY_CLIENT_SECRET,
 		LIGHT_MATCHING,
 	}
 
@@ -31,8 +33,8 @@ class LocalMap(private val vertx: Vertx) {
 		return vertx.sharedData().getLocalMap<String, JsonObject>("jsonobject_data")
 	}
 
-	private fun localHueColorMap(): LocalMap<String, ColorPaletteBuilder.HueColor> {
-		return vertx.sharedData().getLocalMap<String, ColorPaletteBuilder.HueColor>("color_data")
+	private fun localHueColorMap(): LocalMap<String, ColorSet> {
+		return vertx.sharedData().getLocalMap<String, ColorSet>("color_data")
 	}
 
 	fun putString(key: String, value: String) {
@@ -57,14 +59,6 @@ class LocalMap(private val vertx: Vertx) {
 
 	fun getSpotifyRefreshToken(): String? {
 		return localStringMap()[Key.SPOTIFY_REFRESH_TOKEN.name]
-	}
-
-	fun putHueColor(color: ColorPaletteBuilder.HueColor) {
-		localHueColorMap()[Key.PHILIPS_HUE_COLOR.name] = color
-	}
-
-	fun getHueColor(): ColorPaletteBuilder.HueColor? {
-		return localHueColorMap()[Key.PHILIPS_HUE_COLOR.name]
 	}
 
 	fun putHueUserName(username: String) {
@@ -107,12 +101,12 @@ class LocalMap(private val vertx: Vertx) {
 		return localBooleanMap().getOrDefault(Key.LIGHT_MATCHING.name, true)
 	}
 
-	fun putSpotifyStatus(status: JsonObject) {
-		localJsonObjectMap()[Key.SPOTIFY_STATUS_KEY.name] = status
+	fun putSpotifyStatus(status: PlayStatus) {
+		localJsonObjectMap()[Key.SPOTIFY_STATUS_KEY.name] = status.toJsonObject()
 	}
 
-	fun getSpotifyStatus(): JsonObject {
-		return localJsonObjectMap().getOrDefault(Key.SPOTIFY_STATUS_KEY.name, JsonObject())
+	fun getSpotifyStatus(): PlayStatus {
+		return PlayStatus.fromJsonObject(localJsonObjectMap().getOrDefault(Key.SPOTIFY_STATUS_KEY.name, JsonObject()))
 	}
 
 }

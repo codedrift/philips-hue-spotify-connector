@@ -1,6 +1,6 @@
 package alphabetapeter.clients
 
-import alphabetapeter.events.EventBus
+import alphabetapeter.util.EventBus
 import alphabetapeter.timer.SpotifyTokenRefreshTimer
 import alphabetapeter.util.LocalMap
 import alphabetapeter.util.Loggable
@@ -21,8 +21,10 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 		private const val API_URL = "api.spotify.com"
 	}
 
+	private val webClient: WebClient = createWebClient()
+
 	fun authenticateWithCode(code: String, redirectUri: String): Future<JsonObject> {
-		logger.info("Requesting Spotify auth tokens")
+		logger.debug("Requesting Spotify auth tokens")
 
 		val future = Future.future<JsonObject>()
 		val formData = MultiMap.caseInsensitiveMultiMap()
@@ -30,7 +32,7 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 		formData.set("grant_type", "authorization_code")
 		formData.set("code", code)
 		formData.set("redirect_uri", redirectUri)
-		webClient()
+		webClient
 				.post(443, AUTH_URL, "/api/token")
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), getTokenBasicAuth())
 				.putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/x-www-form-urlencoded")
@@ -52,14 +54,14 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 
 
 	fun refreshTokens (): Future<JsonObject>? {
-		logger.info("Refreshing spotify tokens")
+		logger.debug("Refreshing spotify tokens")
 
 		val future = Future.future<JsonObject>()
 		val formData = MultiMap.caseInsensitiveMultiMap()
 
 		formData.set("grant_type", "refresh_token")
 		formData.set("refresh_token", LocalMap(vertx).getSpotifyRefreshToken())
-		webClient()
+		webClient
 				.post(443, AUTH_URL, "/api/token")
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), getTokenBasicAuth())
 				.putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/x-www-form-urlencoded")
@@ -107,19 +109,18 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 		return "Bearer $accessToken"
 	}
 
-	private fun webClient(): WebClient {
+	private fun createWebClient(): WebClient {
 		val options = WebClientOptions()
 				.setSsl(true)
-				.setLogActivity(true)
 				.setKeepAlive(false)
 		return WebClient.create(vertx, options)
 	}
 
 	private fun get(requestUri: String): Future<JsonObject> {
 		val future = Future.future<JsonObject>()
-		logger.info("GET https://$API_URL$requestUri")
+		logger.debug("GET https://$API_URL$requestUri")
 		val authorization = getAuthorizationHeader()
-		webClient()
+		webClient
 				.get(443, API_URL, requestUri)
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), authorization)
 				.send({ asyncResult ->

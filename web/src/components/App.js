@@ -12,16 +12,11 @@ class App extends Component {
 	state = {
 		spotify: {
 			colors: [],
-			hue_color: null,
-			status: {
-				item: {
-					album: {
-						name: "",
-						artists: [],
-						images: [],
-					}
-				}
-			}
+			eligibleColors: [],
+			mainColor: null,
+			artists: "",
+			album: "",
+			song: ""
 		},
 		light_status: {
 			lights: []
@@ -44,7 +39,7 @@ class App extends Component {
 
 	componentDidMount() {
 		this.update();
-		setInterval(() => this.update(), 5000)
+		setInterval(() => this.update(), 1000)
 	}
 
 	update = () => {
