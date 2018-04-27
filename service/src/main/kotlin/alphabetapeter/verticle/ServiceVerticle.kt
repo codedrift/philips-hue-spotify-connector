@@ -66,7 +66,7 @@ class ServiceVerticle : AbstractVerticle(), Loggable {
 		philipsHueRouter.get("/status").handler(PhilipsHueStatusGetHandler(philipsHueApiClient))
 		philipsHueRouter.post("/client").handler(PhilipsHueCreateClientHandler(vertx, philipsHueApiClient))
 		philipsHueRouter.post("/matching").handler(LightMatchingSettingUpdateHandler(vertx))
-		philipsHueRouter.post("/shufflelights").handler(PhilipsHueStatusShuffleHandler(vertx))
+		philipsHueRouter.post("/shuffle").handler(PhilipsHueStatusShuffleHandler(vertx))
 		router.mountSubRouter("/philipshue", philipsHueRouter)
 
 		val spotifyRouter = Router.router(vertx)

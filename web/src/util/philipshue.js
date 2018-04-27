@@ -13,7 +13,7 @@ export const setLightMatching = (enabled) => {
 };
 
 export const shuffleLights = () => {
-	return fetch('/api/philipshue/shufflelights',{
+	return fetch('/api/philipshue/shuffle',{
 		method: 'POST'
 	})
 		.catch((e) => console.log('Error shuffeling lights matching', e))
