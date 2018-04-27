@@ -19,6 +19,10 @@ class ColorChangeEventConsumer(
 		private val apiClient: PhilipsHueApiClient)
 	: Loggable {
 
+	companion object {
+		private const val ERROR_MESSAGE = "Failed to match philips hue lights"
+	}
+
 	fun create() {
 		EventBus(vertx)
 				.addConsumer(
@@ -53,14 +57,14 @@ class ColorChangeEventConsumer(
 						if (it.succeeded()) {
 							EventBus(vertx).publish(EventBus.Type.PHILIPS_HUE_MATCHED.name)
 						} else {
-							logger.info("Failed to match philips hue lights", it.cause())
+							logger.info(ERROR_MESSAGE, it.cause())
 						}
 					})
 				} else {
-					logger.warn("Failed to match philips hue lights - No color found")
+					logger.warn("$ERROR_MESSAGE - No color found")
 				}
 			} else {
-				logger.error("Failed to fetch philips hue lights", it.cause())
+				logger.error(ERROR_MESSAGE, it.cause())
 			}
 		})
 	}

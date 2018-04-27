@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 import Card from "./Card";
 import SpotifyInfoCard from "./SpotifyInfoCard";
 import {authenticate as authenticateSpotify, fetchPlayStatus} from "../util/spotify";
-import {fetchLightStatus, fetchConfig, setLightMatching} from "../util/philipshue";
+import {fetchLightStatus, fetchConfig, setLightMatching, shuffleLights} from "../util/philipshue";
 import PhilipsHueInfoCard from "./PhilipsHueInfoCard";
 import PhilipsHueConnectDialog from "./PhilipsHueConnectDialog";
 
@@ -82,6 +82,10 @@ class App extends Component {
 		})
 	};
 
+	handleShuffle = () => {
+		shuffleLights()
+	}
+
 	updateConfig = () => {
 		fetchConfig()
 			.then(config => {
@@ -114,6 +118,9 @@ class App extends Component {
 				</div>
 				<div className="column is-narrow">
 					<a className={"button is-info"} onClick={this.handleOpenPhilipsHueDialog}>Connect Hue Bridge</a>
+				</div>
+				<div className="column is-narrow">
+					<a className={"button"} onClick={this.handleShuffle}>Shuffle Lights</a>
 				</div>
 				<div className="column is-narrow">
 					<a className={"button is-primary"} onClick={this.toggleLightMatching}>

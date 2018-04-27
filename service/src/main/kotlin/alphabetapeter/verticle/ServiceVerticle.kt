@@ -9,6 +9,7 @@ import alphabetapeter.router.handler.ConfigGetHandler
 import alphabetapeter.router.handler.LightMatchingSettingUpdateHandler
 import alphabetapeter.router.handler.philipshue.PhilipsHueCreateClientHandler
 import alphabetapeter.router.handler.philipshue.PhilipsHueStatusGetHandler
+import alphabetapeter.router.handler.philipshue.PhilipsHueStatusShuffleHandler
 import alphabetapeter.router.handler.spotify.SpotifyAuthHandler
 import alphabetapeter.router.handler.spotify.SpotifyPlayerStatusGetHandler
 import alphabetapeter.timer.SpotifyPlayerStatusUpdateTimer
@@ -65,6 +66,7 @@ class ServiceVerticle : AbstractVerticle(), Loggable {
 		philipsHueRouter.get("/status").handler(PhilipsHueStatusGetHandler(philipsHueApiClient))
 		philipsHueRouter.post("/client").handler(PhilipsHueCreateClientHandler(vertx, philipsHueApiClient))
 		philipsHueRouter.post("/matching").handler(LightMatchingSettingUpdateHandler(vertx))
+		philipsHueRouter.post("/shufflelights").handler(PhilipsHueStatusShuffleHandler(vertx))
 		router.mountSubRouter("/philipshue", philipsHueRouter)
 
 		val spotifyRouter = Router.router(vertx)
