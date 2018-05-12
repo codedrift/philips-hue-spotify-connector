@@ -1,10 +1,40 @@
-import React, {Component} from 'react';
-import {emojify} from 'react-emojione';
+import React, { Component } from "react";
+import { emojify } from "react-emojione";
+import { withStyles } from "material-ui/styles";
+import ExpansionPanel, {
+	ExpansionPanelSummary,
+	ExpansionPanelDetails
+} from "material-ui/ExpansionPanel";
+import Typography from "material-ui/Typography";
+import Card, { CardContent, CardMedia } from "material-ui/Card";
+import ExpandMoreIcon from "material-ui-icons/ExpandMore";
+
+const styles = theme => ({
+	root: {
+		flexGrow: 1,
+		marginTop: 20
+	},
+	heading: {
+		fontSize: theme.typography.pxToRem(15),
+		fontWeight: theme.typography.fontWeightRegular
+	},
+	expansionPanel: {
+		marginTop: 10
+	},
+	card: {},
+	media: {
+		height: 0,
+		paddingTop: "56.25%" // 16:9
+	}
+});
 
 class SpotifyInfoCard extends Component {
-
-	renderColor = (color) => (
-		<div className={"color-display-item"} key={color} style={{backgroundColor: color}}>
+	renderColor = color => (
+		<div
+			className={"color-display-item"}
+			key={`color_${Math.random()}`}
+			style={{ backgroundColor: color }}
+		>
 			<div className="level">
 				<div className="level-left">
 					<div className="level-item">
@@ -15,12 +45,14 @@ class SpotifyInfoCard extends Component {
 		</div>
 	);
 
-	renderColors = (colors) => {
+	renderColors = colors => {
 		return colors.length ? (
 			<div className={"color-display-container"}>
 				{colors.map(color => this.renderColor(color.hex))}
 			</div>
-		) : null;
+		) : (
+			<div />
+		);
 	};
 
 	renderColorNotMatched = () => (
@@ -36,41 +68,58 @@ class SpotifyInfoCard extends Component {
 	);
 
 	renderSongInfo = (album, song, artists, artwork) => {
+		const { classes } = this.props;
 		return (
-			<div className="columns">
-				<div className="column">
-					<img alt={album} src={artwork} className={"spotify-album-cover"}/>
-				</div>
-				<div className="column">
-					<span className="tag is-white">Track</span>
+			<Card className={classes.card}>
+				<CardMedia className={classes.media} image={artwork} title={song} />
+				<CardContent>
 					<h4 className="subtitle is-4">{song}</h4>
-					<span className="tag is-white">Album</span>
 					<h5 className="subtitle is-5">{album}</h5>
-					<span className="tag is-white">Artist</span>
 					<h5 className="subtitle is-5">{artists}</h5>
-				</div>
-			</div>
+				</CardContent>
+			</Card>
 		);
 	};
 
 	render() {
-		// return null;
-		const {mainColor, artworkUrl, album, artists, song, colors, eligibleColors } = this.props.status;
+		const {
+			artworkUrl,
+			album,
+			artists,
+			song,
+			colors,
+			eligibleColors,
+			lightColors
+		} = this.props.status;
+		const { classes } = this.props;
 		return (
-			<div className="content">
+			<div className={classes.root}>
 				{this.renderSongInfo(album, song, artists, artworkUrl)}
-				<hr/>
-				<h4>Dominant Colors</h4>
-				{this.renderColors(colors)}
-				<hr/>
-				<h4>Eligible Colors</h4>
-				{this.renderColors(eligibleColors.map(color => color.color))}
-				<hr/>
-				<h4>{"Chosen color"}</h4>
-				{mainColor ? this.renderColor(mainColor.hex) : this.renderColorNotMatched()}
+				<ExpansionPanel className={classes.expansionPanel}>
+					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+						<Typography className={classes.heading}>Dominant Colors</Typography>
+					</ExpansionPanelSummary>
+					<ExpansionPanelDetails>{this.renderColors(colors)}</ExpansionPanelDetails>
+				</ExpansionPanel>
+				<ExpansionPanel defaultExpanded={false}>
+					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+						<Typography className={classes.heading}>Eligible Colors</Typography>
+					</ExpansionPanelSummary>
+					<ExpansionPanelDetails>
+						{this.renderColors(eligibleColors.map(color => color.color))}
+					</ExpansionPanelDetails>
+				</ExpansionPanel>
+				<ExpansionPanel defaultExpanded>
+					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+						<Typography className={classes.heading}>Light Colors</Typography>
+					</ExpansionPanelSummary>
+					<ExpansionPanelDetails>
+						{lightColors.length > 0 ? this.renderColors(lightColors) : this.renderColorNotMatched()}
+					</ExpansionPanelDetails>
+				</ExpansionPanel>
 			</div>
 		);
 	}
 }
 
-export default SpotifyInfoCard;
+export default withStyles(styles)(SpotifyInfoCard);

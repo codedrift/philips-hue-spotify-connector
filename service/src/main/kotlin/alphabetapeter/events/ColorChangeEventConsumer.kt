@@ -2,6 +2,7 @@ package alphabetapeter.events
 
 import alphabetapeter.clients.PhilipsHueApiClient
 import alphabetapeter.color.ColorConverter
+import alphabetapeter.model.ColorSet
 import alphabetapeter.util.EventBus
 import alphabetapeter.util.LocalMap
 import alphabetapeter.util.Loggable
@@ -39,12 +40,14 @@ class ColorChangeEventConsumer(
 		logger.info("Matching philips hue lights")
 		apiClient.getLights().setHandler({
 			if (it.succeeded()) {
-				val spotifyStatus = LocalMap(vertx).getSpotifyStatus()
-//				val color = spotifyStatus.mainColor
+				val localMap = LocalMap(vertx)
+				val spotifyStatus = localMap.getSpotifyStatus()
+				var pickedLightColors = listOf<ColorSet>()
 
 				if(spotifyStatus.eligibleColors.isNotEmpty()) {
 					val lights = it.result().map {
 						val color = spotifyStatus.eligibleColors[Random().nextInt(spotifyStatus.eligibleColors.size)].color
+						pickedLightColors = pickedLightColors.plus(color)
 						val light = it.value as JsonObject
 						val modelId = light.getString("modelid")
 						val name = light.getString("name")
@@ -53,6 +56,9 @@ class ColorChangeEventConsumer(
 						logger.info("Setting light $name to ${color.hex} - Model $modelId")
 						apiClient.setLight(it.key, setting)
 					}
+					spotifyStatus.lightColors = pickedLightColors
+					logger.info(spotifyStatus.toJsonObject().encodePrettily())
+					localMap.putSpotifyStatus(spotifyStatus)
 					CompositeFuture.all(lights).setHandler({
 						if (it.succeeded()) {
 							EventBus(vertx).publish(EventBus.Type.PHILIPS_HUE_MATCHED.name)

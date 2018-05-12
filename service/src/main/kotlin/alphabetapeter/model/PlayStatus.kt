@@ -13,6 +13,7 @@ class PlayStatus (
 		@JsonProperty("song") var song: String = "",
 		@JsonProperty("album") var album: String = "",
 		@JsonProperty("mainColor") var mainColor: ColorSet = ColorSet(),
+		@JsonProperty("lightColors") var lightColors: List<ColorSet> = listOf(),
 		@JsonProperty("eligibleColors") var eligibleColors: List<RatedColor> = listOf()
 ): JsonMappable, Shareable {
 	companion object {

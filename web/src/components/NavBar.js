@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import NavLogo from '../images/spotifyxhuelogo.png';
+import React, { Component } from "react";
+import NavLogo from "../images/spotifyxhuelogo.png";
 
 class NavBar extends Component {
 	render() {
@@ -8,12 +8,7 @@ class NavBar extends Component {
 				<nav className="navbar" aria-label="main navigation">
 					<div className="navbar-brand">
 						<a className="navbar-item" href="/">
-							<img
-								src={NavLogo}
-								alt="Connect Spotify and Philips Hue"
-								width="112"
-								height="28"
-							/>
+							<img src={NavLogo} alt="Connect Spotify and Philips Hue" width="112" height="28" />
 						</a>
 					</div>
 				</nav>

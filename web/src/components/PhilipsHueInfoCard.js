@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 
 class PhilipsHueInfoCard extends Component {
-
-	renderLight = ({ name, bri, hex}) => {
+	renderLight = ({ name, bri, hex }) => {
 		const style = {
 			backgroundColor: hex,
-			height: 50,
+			height: 50
 		};
 		return (
 			<div key={name} className="column">
@@ -21,17 +20,14 @@ class PhilipsHueInfoCard extends Component {
 				</div>
 				<span>{`Brightness ${Math.floor(100 * (bri / 255))}%`}</span>
 			</div>
-		)
+		);
 	};
 
 	render() {
-		const lights = this.props.lights
-			.map(({name, state: {hex, bri}}) => ({name, hex, bri}));
+		const lights = this.props.lights.map(({ name, state: { hex, bri } }) => ({ name, hex, bri }));
 		return (
 			<div>
-				<div className="columns">
-					{lights.map(this.renderLight)}
-				</div>
+				<div className="columns">{lights.map(this.renderLight)}</div>
 			</div>
 		);
 	}

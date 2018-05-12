@@ -5,19 +5,26 @@
   "dependencies": {
     "bulma": "^0.6.1",
     "lodash": "^4.17.4",
+    "material-ui": "^1.0.0-beta.47",
+    "material-ui-icons": "^1.0.0-beta.36",
     "query-string": "^5.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-emojione": "^5.0.0"
   },
   "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.0",
+    "prettier": "^1.12.1",
     "react-scripts": "1.0.13"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "format": "prettier --write 'src/**/*.{js,jsx,css}'",
+    "eject": "react-scripts eject",
+    "precommit": "lint-staged"
   },
   "proxy": {
     "/api": {
@@ -27,5 +34,11 @@
         "^/api": "/"
       }
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,css}": [
+      "yarn format",
+      "git add"
+    ]
   }
 }

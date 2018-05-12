@@ -74,7 +74,7 @@ class SpotifyStatusUpdateTickEventConsumer(
 
 			if (mainColor != null) {
 				playStatus.mainColor = mainColor.color
-				logger.info("Album color changed to ${mainColor.color.hex}")
+				logger.info("Album main color changed to ${mainColor.color.hex}")
 				EventBus(vertx).publish(EventBus.Type.COLOR_CHANGE.name)
 			}
 		}
@@ -83,7 +83,6 @@ class SpotifyStatusUpdateTickEventConsumer(
 		val playStatusJson = playStatus.toJsonObject()
 		EventBus(vertx).publish(EventBus.Type.SPOTIFY_STATE_CHANGE.name, playStatusJson)
 		logger.debug("Spotify player status:\n$playStatusJson")
-
 	}
 
 	private fun selectAlbumArtwork(album: JsonObject): String {

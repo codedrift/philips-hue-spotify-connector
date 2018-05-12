@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
-import {createClient as createPhilipsHueClient} from "../util/philipshue";
+import React, { Component } from "react";
+import { createClient as createPhilipsHueClient } from "../util/philipshue";
 
 class PhilipsHueConnectDialog extends Component {
-
 	state = {
 		client: {},
 		clientName: "",
@@ -13,49 +12,45 @@ class PhilipsHueConnectDialog extends Component {
 	close = () => this.props.onClose();
 
 	connectHueBridge = () => {
-		const clientName = this.state.userName
-			? this.state.name
-			: `clientId-${Math.random()}`;
-		createPhilipsHueClient(clientName, this.state.bridgeIp, this.state.userName)
-			.then((client) => {
-				console.log("createPhilipsHueClient", client);
-				this.setState({
-					client
-				})
-			})
+		const clientName = this.state.userName ? this.state.name : `clientId-${Math.random()}`;
+		createPhilipsHueClient(clientName, this.state.bridgeIp, this.state.userName).then(client => {
+			console.log("createPhilipsHueClient", client);
+			this.setState({
+				client
+			});
+		});
 	};
 
-	componentWillReceiveProps(nextProps){
+	componentWillReceiveProps(nextProps) {
 		this.setState({
 			userName: nextProps.config.philipsHue.userName,
 			bridgeIp: nextProps.config.philipsHue.bridgeIp
-		})
+		});
 	}
 
-	handleBridgeIpChange = (event) => {
-		this.setState({bridgeIp: event.target.value});
+	handleBridgeIpChange = event => {
+		this.setState({ bridgeIp: event.target.value });
 	};
 
-	handleClientNameChange = (event) => {
-		this.setState({clientName: event.target.value});
+	handleClientNameChange = event => {
+		this.setState({ clientName: event.target.value });
 	};
 
-	handleUserNameChange = (event) => {
-		this.setState({username: event.target.value});
+	handleUserNameChange = event => {
+		this.setState({ username: event.target.value });
 	};
 
 	render() {
 		return (
 			<div className={`modal ${this.props.visible ? "is-active" : ""}`}>
-				<div onClick={this.close} className="modal-background"/>
+				<div onClick={this.close} className="modal-background" />
 				<div className="modal-content">
 					<div className="content">
 						<div className="notification">
 							<h3>Connect Philips Hue Bridge</h3>
 							<p>
-								To connect this application you will need connect it with your hue bridge.
-								Press the link button on the Philips Hue Bridge and click
-								the <strong>Connect</strong> button.
+								To connect this application you will need connect it with your hue bridge. Press the
+								link button on the Philips Hue Bridge and click the <strong>Connect</strong> button.
 								Make sure to save the username and copy it to the service config for future uses.
 							</p>
 							<div className="field">
@@ -66,7 +61,8 @@ class PhilipsHueConnectDialog extends Component {
 										type="text"
 										placeholder="1.2.3.4"
 										value={this.state.bridgeIp}
-										onChange={this.handleBridgeIpChange}/>
+										onChange={this.handleBridgeIpChange}
+									/>
 								</div>
 							</div>
 							<div className="field">
@@ -93,14 +89,14 @@ class PhilipsHueConnectDialog extends Component {
 									/>
 								</div>
 							</div>
-							<pre>
-									{JSON.stringify(this.state.client, null, 2)}
-								</pre>
-							<a className={"button is-primary"} onClick={this.connectHueBridge}>Connect</a>
+							<pre>{JSON.stringify(this.state.client, null, 2)}</pre>
+							<a className={"button is-primary"} onClick={this.connectHueBridge}>
+								Connect
+							</a>
 						</div>
 					</div>
 				</div>
-				<button onClick={this.close} className="modal-close is-large" aria-label="close"/>
+				<button onClick={this.close} className="modal-close is-large" aria-label="close" />
 			</div>
 		);
 	}
