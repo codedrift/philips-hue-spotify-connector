@@ -1,4 +1,5 @@
 bin
+out
 # Created by https://www.gitignore.io/api/vim,node,java,linux,maven,gradle,intellij+all,visualstudiocode
 
 ### Intellij+all ###
