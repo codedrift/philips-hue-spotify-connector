@@ -23,12 +23,12 @@ class PhilipsHueStatusGetHandler(private val philipsHueApiClient: PhilipsHueApiC
 			logger.warn(errorMessage)
 			return
 		}
-		philipsHueApiClient.getLights().setHandler({
+		philipsHueApiClient.getLights().setHandler {
 			if (it.succeeded()) {
 				val lights = it.result().map {
 					philipsHueApiClient.getLight(it.key)
 				}
-				CompositeFuture.all(lights).setHandler({
+				CompositeFuture.all(lights).setHandler {
 					if (it.succeeded()) {
 						val result = it.result().list<JsonObject>() as List<JsonObject>
 						val combinedResult = result.map {
@@ -56,12 +56,12 @@ class PhilipsHueStatusGetHandler(private val philipsHueApiClient: PhilipsHueApiC
 						val status = Json.obj("lights" to combinedResult)
 						routingContext.response().end(status.encode())
 					}
-				})
+				}
 			} else {
 				logger.error("Failed to get philips hue state", it.cause())
 				routingContext.fail(it.cause())
 			}
-		})
+		}
 	}
 
 }

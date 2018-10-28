@@ -15,7 +15,7 @@ class Env(private val vertx: Vertx): Loggable {
 					val value = it.value
 
 					when {
-						isBoolean(value) -> localMap.putBoolean(keyWithoutPrefix, value.toBoolean())
+						isBoolean(value) -> localMap.putBoolean(keyWithoutPrefix, value!!.toBoolean())
 						else -> localMap.putString(keyWithoutPrefix, value)
 					}
 

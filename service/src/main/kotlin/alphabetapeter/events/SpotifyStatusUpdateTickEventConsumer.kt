@@ -30,7 +30,7 @@ class SpotifyStatusUpdateTickEventConsumer(
 			return
 		}
 		logger.info("Updating spotify player status")
-		apiClient.getPlayerStatus().setHandler({
+		apiClient.getPlayerStatus().setHandler {
 			if (it.succeeded()) {
 				val body = it.result()
 				if(body != null){
@@ -39,7 +39,7 @@ class SpotifyStatusUpdateTickEventConsumer(
 			} else {
 				logger.error("Failed to update spotify status", it.cause().message)
 			}
-		})
+		}
 	}
 
 	private fun updatePlayStatus(body: JsonObject) {

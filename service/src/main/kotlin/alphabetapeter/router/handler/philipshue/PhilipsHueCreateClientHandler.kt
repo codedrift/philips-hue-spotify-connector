@@ -17,7 +17,7 @@ class PhilipsHueCreateClientHandler(
 
 	override fun handle(routingContext: RoutingContext) {
 
-		routingContext.request().bodyHandler({
+		routingContext.request().bodyHandler {
 			val requestBody = it.toJsonObject()
 			val clientName = requestBody.getString("clientName")
 			val bridgeIp = requestBody.getString("bridgeIp")
@@ -35,13 +35,13 @@ class PhilipsHueCreateClientHandler(
 				).encode())
 			}
 
-			philipsHueApiClient.authenticate(clientName).setHandler({
+			philipsHueApiClient.authenticate(clientName).setHandler {
 				if (it.succeeded()) {
 					routingContext.response().end(it.result().encode())
 				} else {
 					routingContext.fail(it.cause())
 				}
-			})
-		})
+			}
+		}
 	}
 }

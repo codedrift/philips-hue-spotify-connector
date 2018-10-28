@@ -13,11 +13,11 @@ fun main(args: Array<String>) {
 
 	val vertx = Vertx.vertx()
 	Env(vertx).mapEnvToLocalMap()
-	vertx.deployVerticle(ServiceVerticle(), { res ->
+	vertx.deployVerticle(ServiceVerticle()) { res ->
 		if (res.succeeded()) {
 			logger.info("Deployment succeeded. Id is: ${res.result()}")
 		} else {
 			logger.info("Deployment failed! ${res.cause()}")
 		}
-	})
+	}
 }

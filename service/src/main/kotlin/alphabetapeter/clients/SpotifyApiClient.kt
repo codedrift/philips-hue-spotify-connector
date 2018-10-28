@@ -36,7 +36,7 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 				.post(443, AUTH_URL, "/api/token")
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), getTokenBasicAuth())
 				.putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/x-www-form-urlencoded")
-				.sendForm(formData, { asyncResult ->
+				.sendForm(formData) { asyncResult ->
 					if (asyncResult.succeeded()) {
 						val tokenResult = asyncResult.result().bodyAsJsonObject()
 						logger.info(tokenResult.encodePrettily())
@@ -47,7 +47,7 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 					} else {
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 
 		return future
 	}
@@ -65,7 +65,7 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 				.post(443, AUTH_URL, "/api/token")
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), getTokenBasicAuth())
 				.putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/x-www-form-urlencoded")
-				.sendForm(formData, { asyncResult ->
+				.sendForm(formData) { asyncResult ->
 					if (asyncResult.succeeded()) {
 						val tokenResult = asyncResult.result().bodyAsJsonObject()
 						handleAuthentication(tokenResult)
@@ -73,7 +73,7 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 					} else {
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 		return future
 	}
 
@@ -123,13 +123,13 @@ class SpotifyApiClient(private val vertx: Vertx) : Loggable {
 		webClient
 				.get(443, API_URL, requestUri)
 				.putHeader(HttpHeaders.AUTHORIZATION.toString(), authorization)
-				.send({ asyncResult ->
+				.send { asyncResult ->
 					if (asyncResult.succeeded()) {
 						future.complete(asyncResult.result().bodyAsJsonObject())
 					} else {
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 		return future
 	}
 	fun getUserInfo(): Future<JsonObject> {

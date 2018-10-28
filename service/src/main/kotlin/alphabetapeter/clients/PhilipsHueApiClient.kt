@@ -29,14 +29,14 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 		logger.debug("GET http://$ip/api/$userName$requestUri")
 		webClient
 				.get(80, ip, "/api/$userName$requestUri")
-				.send({ asyncResult ->
+				.send { asyncResult ->
 					if (asyncResult.succeeded()) {
 						val bodyAsJsonObject = asyncResult.result().bodyAsJsonObject()
 						future.complete(bodyAsJsonObject)
 					} else {
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 		return future
 	}
 
@@ -47,13 +47,13 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 		logger.debug("PUT http://$ip/api/$userName$requestUri $body")
 		webClient
 				.put(80, ip, "/api/$userName$requestUri")
-				.sendJson(body, { asyncResult ->
+				.sendJson(body) { asyncResult ->
 					if (asyncResult.succeeded()) {
 						future.complete(JsonObject())
 					} else {
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 		return future
 	}
 
@@ -67,7 +67,7 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 		logger.debug("POST http://$ip/api $body")
 		webClient
 				.post(80, ip, "/api")
-				.sendJson(body, { asyncResult ->
+				.sendJson(body) { asyncResult ->
 					if (asyncResult.succeeded()) {
 						val result = asyncResult.result()
 						val resultObject = JsonObject().put("result", result.bodyAsJsonArray())
@@ -87,7 +87,7 @@ class PhilipsHueApiClient(private val vertx: Vertx) : Loggable {
 						logger.error("Failed to authenticate philips hue bridge", asyncResult.cause())
 						future.fail(asyncResult.cause())
 					}
-				})
+				}
 		return future
 	}
 

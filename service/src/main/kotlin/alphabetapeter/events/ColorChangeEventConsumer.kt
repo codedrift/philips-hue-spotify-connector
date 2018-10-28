@@ -38,7 +38,7 @@ class ColorChangeEventConsumer(
 			return
 		}
 		logger.info("Matching philips hue lights")
-		apiClient.getLights().setHandler({
+		apiClient.getLights().setHandler {
 			if (it.succeeded()) {
 				val localMap = LocalMap(vertx)
 				val spotifyStatus = localMap.getSpotifyStatus()
@@ -59,20 +59,20 @@ class ColorChangeEventConsumer(
 					spotifyStatus.lightColors = pickedLightColors
 					logger.info(spotifyStatus.toJsonObject().encodePrettily())
 					localMap.putSpotifyStatus(spotifyStatus)
-					CompositeFuture.all(lights).setHandler({
+					CompositeFuture.all(lights).setHandler {
 						if (it.succeeded()) {
 							EventBus(vertx).publish(EventBus.Type.PHILIPS_HUE_MATCHED.name)
 						} else {
 							logger.info(ERROR_MESSAGE, it.cause())
 						}
-					})
+					}
 				} else {
 					logger.warn("$ERROR_MESSAGE - No color found")
 				}
 			} else {
 				logger.error(ERROR_MESSAGE, it.cause())
 			}
-		})
+		}
 	}
 
 	private fun canMatchLights(): Boolean {
